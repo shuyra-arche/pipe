@@ -1,0 +1,8 @@
+{
+  "source": "https://raw.githubusercontent.com/anreonyr/sqware/f82ee2a9751b09563ca0f21577c212ab4470c8e4/SBI.bin",
+  "sha256": "c53d58aa9ab17f95fa1af159f0bf05fad5c5622ebc0f1084463435fa6e5752b6",
+  "bytes": 277880,
+  "license": "No project license declaration found in source snapshot; no new license asserted",
+  "plic_class": "sifive,plic-1.0.0",
+  "plic_source": "programs/src/driver/router/api/src/declaration.rs at f82ee2a9751b09563ca0f21577c212ab4470c8e4"
+}

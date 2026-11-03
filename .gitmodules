@@ -1,0 +1,3 @@
+[submodule "integration/components/kernel"]
+	path = integration/components/kernel
+	url = https://github.com/shuyra-arche/kernel.git

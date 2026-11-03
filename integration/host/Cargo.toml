@@ -1,0 +1,13 @@
+[package]
+name = "pipe-integration-host"
+version.workspace = true
+edition.workspace = true
+publish = false
+
+[[bin]]
+name = "pipe-integration-host"
+path = "src/main.rs"
+
+[dependencies]
+pipe-integration-declaration = { path = "../declaration" }
+image-builder = { git = "https://github.com/shuyra-arche/image-builder.git", rev = "17f294bae58ef5526a18fd6a88a88cc41850d4a6" }

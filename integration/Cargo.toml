@@ -1,0 +1,15 @@
+[workspace]
+resolver = "3"
+members = ["declaration", "root", "probe", "host"]
+# The Kernel is a fixed public gitlink prepared by Root, not a workspace member.
+exclude = ["components/kernel"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

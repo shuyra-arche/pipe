@@ -1,0 +1,17 @@
+[workspace]
+resolver = "3"
+members = ["api", "client", "declaration", "server"]
+# The host tests and the staged integration fixture are separate workspaces.
+exclude = ["tests", "integration"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+
+# Freestanding program ELFs have no unwinder; keep the same abort convention as
+# the product images this unit is extracted from.
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
