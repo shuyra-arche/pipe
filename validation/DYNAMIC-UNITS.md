@@ -6,9 +6,12 @@ The `test.pipe-roundtrip` declaration selects Pipe via requires/after and ends
 transiently. Unit declarations and real bin metadata supply the necessary image
 set without central registration.
 
-The Rust guest creates capacity 16, exercises two payloads across ring wraparound,
-checks EOF after writer close, closes/drops mapped ports and explicitly releases
-the Pipe. Failure returns native reason 17. Pass/fail is determined by System's
+The Rust guest creates capacity 16 and exercises ring wraparound with a payload
+larger than capacity, requiring partial I/O. It checks EOF, closes directions,
+explicitly releases the Pipe while endpoint references remain held, verifies
+both native capabilities are revoked, then drops ports. Failure returns
+`0x500000 | (step << 8) | Fail::code()`; `src/step.rs` names each stage.
+Pass/fail is determined by System's
 typed native exit and reclamation receipts.
 
 Validation used nightly-2026-10-09. The actual guest bin built for RV64 from the
@@ -19,5 +22,11 @@ cargo build --manifest-path tests/roundtrip/Cargo.toml --target riscv64gc-unknow
 ```
 
 A host CLI build has also packed actual System, Pipe and guest ELFs into initrd.
-No guest, SMP or runtime integration acceptance was run. Existing tests/scenarios
-are unchanged and are not evidence for this new runtime path.
+The minimal three-Unit case passed single-core QEMU 10.0.13 / OpenSBI 1.6 with
+native Reap/zero exit, acknowledged retirement and VM exit zero. The initial
+test dropped endpoints before explicit release and received Dead after normal
+automatic collection; cleanup order is now corrected without ignoring failure.
+UART CRLF decoding was corrected in the host serial adapter. The final run's
+verdict binds success to initrd SHA-256
+`7dccbac8c48596533ca1a05cc520e30496caf28db1e1f879fc4998aba32af3ba`.
+No SMP or performance acceptance was run. Existing scenarios remain unchanged.

@@ -6,6 +6,8 @@ explicit endpoint/pipe release. Its successful result is native exit zero;
 System and the host runner verify exit receipts and reclamation. It prints no
 PASS marker and does not depend on kernel event logging. Existing scenarios are
 not migrated. See [validation/DYNAMIC-UNITS.md](validation/DYNAMIC-UNITS.md).
+The minimal case passed single-core QEMU, including native endpoint revocation
+and final System retirement receipts.
 
 Public pipe declaration, wire API, client and resident server extracted from
 Shuyra Source. See [PROVENANCE.md](PROVENANCE.md) for the frozen source, ownership

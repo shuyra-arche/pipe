@@ -104,6 +104,7 @@ dependencies = [
  "mold",
  "pipe-api",
  "pipe-client",
+ "resource",
  "system-client",
 ]
 
