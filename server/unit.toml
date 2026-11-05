@@ -1,0 +1,19 @@
+schema = 1
+id = "pipe"
+
+[loader]
+image = "pipe"
+
+[control]
+creation = "startup"
+ending = "resident"
+ready = { signal = "9887014109901452468" }
+
+[[operator.namespace]]
+key = "service"
+placement = "shared"
+path = "pipe"
+scope = "subtree"
+ops = 279
+permit = "public"
+bindings = [{ name = "create", mark = "5496975446225960432", view = 2, permit = "public" }]
