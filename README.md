@@ -1,5 +1,12 @@
 # Pipe
 
+The dynamic Vanllia model discovers `server/unit.toml` directly. A new Rust
+`tests/roundtrip` guest and its `test.toml` exercise ring wraparound, EOF and
+explicit endpoint/pipe release. Its successful result is native exit zero;
+System and the host runner verify exit receipts and reclamation. It prints no
+PASS marker and does not depend on kernel event logging. Existing scenarios are
+not migrated. See [validation/DYNAMIC-UNITS.md](validation/DYNAMIC-UNITS.md).
+
 Public pipe declaration, wire API, client and resident server extracted from
 Shuyra Source. See [PROVENANCE.md](PROVENANCE.md) for the frozen source, ownership
 map, attribution and license absence.

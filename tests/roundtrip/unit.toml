@@ -1,0 +1,11 @@
+schema = 1
+id = "test.pipe-roundtrip"
+
+[loader]
+image = "test-pipe-roundtrip"
+
+[control]
+creation = "startup"
+requires = ["pipe"]
+after = ["pipe"]
+ending = "transient"
