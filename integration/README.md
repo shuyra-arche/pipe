@@ -118,11 +118,6 @@ each 4/8 run. Faults, timeout/kill, missing task accounting or failed semantic
 checks fail acceptance. Serial alone omits unnamed successful exits and cannot
 establish the complete task accounting.
 
-## Superseded files for Root deletion
-
-`integration/probe/src/shared.rs`, `child.rs`, `endpoint_data.rs` are no longer
-referenced; Root removes them exactly.
-
 ## Limits
 
 The 5 s client calls are unchanged SDK waits. The parent's 30 s owner-death phase

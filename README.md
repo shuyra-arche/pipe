@@ -1,56 +1,43 @@
-# Pipe
+# pipe
 
-The dynamic Vanllia model discovers `server/unit.toml` directly. A new Rust
-`tests/roundtrip` guest and its `test.toml` exercise ring wraparound, EOF and
-explicit endpoint/pipe release. Its successful result is native exit zero;
-System and the host runner verify exit receipts and reclamation. It prints no
-PASS marker and does not depend on kernel event logging. Existing scenarios are
-not migrated. See [validation/DYNAMIC-UNITS.md](validation/DYNAMIC-UNITS.md).
-The minimal case passed single-core QEMU, including native endpoint revocation
-and final System retirement receipts.
+Shuyra 的管道服务，提供 Unit 声明、wire API、客户端与常驻 server。
 
-Public pipe declaration, wire API, client and resident server extracted from
-Shuyra Source. See [PROVENANCE.md](PROVENANCE.md) for the frozen source, ownership
-map, attribution and license absence.
-
-| Package | Responsibility |
+| 目录 | 职责 |
 | --- | --- |
-| `pipe-declaration` | Pure `UNIT` and owned image `BUILD` coordinates |
-| `pipe-api` | Existing marks, opcodes, failure codes and exact wire frames |
-| `pipe-client` | Client requests, owner leases and mapped stream ports |
-| `pipe-server` | Resident server; binary `pipe` |
+| `api/` | marks、操作码、失败码与 wire 帧 |
+| `client/` | 请求、owner lease 与映射端口 |
+| `server/` | 管道账本与常驻 `pipe` 程序；`unit.toml` 是动态 Unit 入口 |
+| `declaration/` | 既有 `UNIT` 与镜像构建坐标 |
+| `tests/` | wire、声明与真实账本模块的宿主测试 |
+| `tests/roundtrip/` | 动态 Unit 最小往返 guest 与测试声明 |
+| `integration/` | 独立的多 Unit 集成工作区 |
 
-Consumers own their actual composition and selected Deployment. Integration
-consumers prefix `BUILD.manifest` with the provider's checkout location; image,
-Cargo package, binary, features, target and profile remain separate coordinates.
-The server uses public execution/mold for its single startup, panic, allocator
-and linker implementation. Stream remains a public fixed-revision dependency.
+创建者持有 lease 并授权端点绑定。读写角色预留持续到管道生命周期结束；
+CLOSE 是不可逆的半关闭，不等于 RELEASE 或允许重绑。端点死亡关闭对应方向，
+显式 release 或 owner lease 死亡通过 Kernel 撤销根资源。
+请求被接纳但回复丢失时，操作可能已提交；BIND 不提供额外幂等保证。
+调用者仍负责失败路径上的自身 lease 清理。
 
-A pipe's creator owns its lease and authorizes endpoint binding. Read/write
-reservations last for the pipe lifetime. CLOSE is sticky half-close, not RELEASE
-or permission to rebind a reserved direction. Endpoint death closes its
-direction; explicit release or owner-lease death revokes the root through the
-existing Kernel mechanism. An admitted request with a lost reply may already
-have committed; BIND has no new idempotence guarantee. The caller retains
-cleanup responsibility for its owned lease on failure.
+## 工具链与维护
 
-Build the server with the pinned toolchain:
+使用 `rust-toolchain.toml` 固定的 `nightly-2026-09-04`，首次运行需要 Rustup
+下载工具链及 RV64 目标。依赖版本以 Cargo 清单和锁文件为准。
+下列命令从仓库根目录执行；宿主测试不代表真实内核运行验证。
 
 ```sh
 cargo build --locked -p pipe-server --bin pipe --target riscv64gc-unknown-none-elf --release
 cargo test --locked --manifest-path tests/Cargo.toml --target x86_64-unknown-linux-gnu
+cargo build --locked --manifest-path tests/roundtrip/Cargo.toml --target riscv64gc-unknown-none-elf
 ```
 
-The host tests project only this provider's own pure ledger sources; no Source
-path or second implementation is used. They include the original Shell ledger
-case, wire golden bytes and declaration facts. After normal dependency cache
-preparation, repeat with `--offline`.
+动态测试由 Vanllia 发现 `tests/roundtrip/test.toml`，使用 System 原生退出与回收回执判定。
+它验证绕回、部分 I/O、EOF、显式释放及仍持有端点的能力撤销；失败码为
+`0x500000 | (step << 8) | Fail::code()`，步骤见 `tests/roundtrip/src/step.rs`。
 
-The separate [real integration](integration/README.md) owns its explicit
-declarations, selected deployment, Root/probe ELFs and host image CLI. It uses
-fixed public Kernel/System/image-builder versions and a hashed public firmware
-input. Kernel is a direct fixed gitlink, so clone with `--recurse-submodules`.
-Host tests alone do not establish runtime cleanup: acceptance requires actual
-semantic and native-exit evidence, natural shutdown and frame equality at both
-4 and 8 Harts. Validation results belong to the associated Source migration
-record; no success is implied by these instructions.
+[独立集成说明](integration/README.md) 描述另外的多核组合及验收条件。
+该工作区依赖固定 Kernel 子模块，使用前执行 `git submodule update --init --recursive`。
+
+## 贡献与来源
+
+维护与 PR 规则见 [Shuyra 贡献规范](https://github.com/shuyra-arche/vanllia/blob/main/CONTRIBUTING.md)。
+来源、作者与许可情况见 [PROVENANCE.md](PROVENANCE.md)。
